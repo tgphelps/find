@@ -11,7 +11,7 @@ def fatal(msg: str) -> NoReturn:
 def validate_args(args: Dict[str, str]):
     ftype = args['--type']
     if ftype:
-        if ftype in ('d', 'f'):
+        if ftype in ('d', 'f', 'l'):
             pass
         else:
             fatal('bad --type value')

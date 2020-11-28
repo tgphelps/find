@@ -14,6 +14,7 @@ Options:
 
 import os
 import os.path
+import stat
 from typing import Optional
 import docopt  # type: ignore
 import util
@@ -45,13 +46,22 @@ def main() -> None:
 def do_all_files(dir: str) -> None:
     for root, dirs, files in os.walk(dir):
         for name in dirs:
-            do_path(root, name)
+            if g.ftype in (None, 'd'):
+                path = os.path.join(root, name)
+                print(path)
         for name in files:
-            do_path(root, name)
+            if g.ftype != 'd':
+                do_path(root, name)
 
 
 def do_path(root: str, name: str) -> None:
+    # Should check ftype
     path = os.path.join(root, name)
+    st = os.lstat(path)
+    if g.ftype == 'f' and not stat.S_ISREG(st.st_mode):
+        return
+    if g.ftype == 'l' and not stat.S_ISLNK(st.st_mode):
+        return
     print(path)
 
 
